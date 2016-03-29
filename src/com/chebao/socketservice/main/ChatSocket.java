@@ -16,13 +16,13 @@ public class ChatSocket extends Thread {
     //构造
     public ChatSocket(Socket s) {
         this.socket = s;
-
     }
 
     public void out(String out) {
         try {
             //向客户端发送的内容
             socket.getOutputStream().write(out.getBytes("UTF-8"));
+            System.out.println("ChatSocket::"+ out);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -36,12 +36,16 @@ public class ChatSocket extends Thread {
             BufferedReader br = new BufferedReader(
                     new InputStreamReader(
                             socket.getInputStream(),"UTF-8"));
+
             String line = null;
             while ((line = br.readLine()) != null){
+
                 //2 然后把读取到的信息发送给当前聊天室内所有人
-                ChatManager.getChatManager().publish(this,line);
+                ChatManager.getChatManager().publish(ChatSocket.this,line);
             }
+
             br.close();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
